@@ -80,9 +80,11 @@ class Person(Account):
 
     def requestFriendList(self):
         # 以uuid跟db拿取friend資訊
+        pass
 
     def showFriendList(self):
         print("Your friend list: ", self.friendsList)
+
 
 
 # ===============
@@ -124,6 +126,7 @@ class Person(Account):
     def CaloiesIntakeCal():
       # consider getting data form csv
       # return DailyIntakeCalories.total_intake_calories
+      pass
 
 
         # ===============
