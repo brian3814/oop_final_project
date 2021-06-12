@@ -1,0 +1,9 @@
+{
+    "conn_info":{
+        "host":"35.206.195.23",
+        "port":"5432",
+        "database":"TEST",
+        "username":"postgres",
+        "password":"oopissohard"
+    }
+}
