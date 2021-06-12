@@ -30,10 +30,10 @@ def build_connection():
         password = _setting['conn_info']['password'])
     return conn_init
 
-def execute(query_string):
+def execute(query_string,values):
     conn = build_connection()
     cur = conn.cursor()
-    cur.execute(query_string)
+    cur.execute(query_string, values)
     
     for notice in conn.notices:
         logger.info(f'{notice}')
@@ -46,10 +46,15 @@ def get_meal():
     pass
 
 # For test only
-
+'''
 def drop_table(table_name):
     sql_query = 'DROP TABLE IF EXISTS {};'.format(table_name)
     execute(sql_query)
+'''
 
+def create_account(account_name,gender,birthday,height,weight):
+    sql_query ="""INSERT INTO Account (account_name,gender,birthday,height,weight) VALUES (%s,%s,%s,%s,%s)""" 
+    values =(account_name,gender,birthday,height,weight)
+    execute(sql_query,values)
+    print('Account: {} has been created sucessfully'.format(account_name))
 
-drop_table('meal')
