@@ -135,7 +135,7 @@ class DailyIntakeCalories:
 
     @property
     def meals(self):
-        return {i:{meal.name:meal.totalCalories} for i,meal in enumerate(self.__meals)}
+        return self.__meals
 
     @meals.setter
     def meals(self,i_meals):
@@ -143,15 +143,12 @@ class DailyIntakeCalories:
             if self.__is_init == False: raise Exception('You cannot empty the meal list, plz use empty_meals()')
             self.__meals = []
         else:
-            if not (isinstance(i_meals,list) and self._is_food(i_meals)): raise TypeError('The type of the input is not allowed')
+            if not (isinstance(i_meals,list) and self._is_meal(i_meals)): raise TypeError('The type of the input is not allowed')
             self.__meals = i_meals
 
     @property
     def total_intake_calories(self):
-        _sum = 0.0
-        for _ , meal in self.meals.items():
-            _sum += sum([v for k,v in meal.items()])
-        return _sum
+        return sum([meal.totalCalories for meal in self.meals])
 
     @staticmethod
     def _is_meal(input):
@@ -173,6 +170,9 @@ class DailyIntakeCalories:
     def empty_inTake(self):
         self.__is_init = True
         self.__meals = []
+
+    def meal_summary(self):
+        return {i:{meal.name:meal.totalCalories} for i,meal in enumerate(self.__meals)}
 
 
 ##########################################################################
@@ -199,7 +199,6 @@ class Person(Account):
 
     +check daily intake calories (search by date)
     +check daily consumed calories (search by date)
-
     """
 
     def __init__(self, name, uuid, level, age, height, weight, gender, hobbies):
