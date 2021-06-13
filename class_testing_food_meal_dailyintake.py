@@ -7,13 +7,9 @@ if __name__ == '__main__':
     print("\n[[Food]]")
     apple = Food('apple')
     print(apple.name)
-    # print('apple {}'.format(apple.calories))  #Error
-    # apple.name = 'AAA'  # Error
-    # print(apple.get_composition()) # Error
     apple.set_composition(1,2,3)
     print(apple.get_composition())
     print('apple {}'.format(apple.calories))
-
     banana = Food('banana',2,3,4)
     print('banana {}'.format(banana.calories))
 
@@ -29,7 +25,6 @@ if __name__ == '__main__':
     print('empty food {}'.format(meal.totalCalories))
     meal.add_food([apple,banana])
     print('add food {}'.format(meal.totalCalories))
-
     meal2 = Meal('Diner',datetime.today(),[apple,apple,apple])
     print('Diner {}'.format(meal2.totalCalories))
 
@@ -42,10 +37,16 @@ if __name__ == '__main__':
     print('add meal {}'.format(today.total_intake_calories))
     today.empty_inTake()
     print('empty meal {}'.format(today.total_intake_calories))
-
     today.add_meal([meal,meal2])
     print('meal {}'.format(today.total_intake_calories))
 
     #===============
     print('End')
+
+
+    paige = Person('Paige', 0, 'premium', 25, 1.62, 54, 'female', 'yoga')
+    paige.showInfo()
+    paige.FollowFriend('julia')
+    paige.showFriendList()
+    paige.RemoveFriend('Julia')
 

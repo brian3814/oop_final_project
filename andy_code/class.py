@@ -1,7 +1,6 @@
 import os,sys
 import datetime
-import shutil
-# from abc import ABC
+
 
 class Food():
     def __init__(self,name,carb=None,protein=None,fat=None):
