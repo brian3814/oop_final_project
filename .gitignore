@@ -1,1 +1,6 @@
+.git
 *.log
+[Bb]uild
+node_modules/
+__pycache__
+sample/
