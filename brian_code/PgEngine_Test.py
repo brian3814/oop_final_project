@@ -33,10 +33,10 @@ with open('{}/CreateSqlTable.sql'.format(os.path.dirname(__file__)),'r',encoding
     execute(create_table_sql.read())
 
 # Create accounts
-create_account('brianliang','Brian','Liang','brianliang@gmail.com', 'm', '2021/06/12', 164, 63)
-create_account('paigelin','Paige','Lin','paigelin@gmail.com', 'f', '2021/06/12', 165, 55)
-create_account('peiyuleu','Andy','Leu','peiyuleu@gmail.com', 'm', '2021/06/12', 165, 55)
-create_account('juliahuang','Julia','Huang','juliahuang@gmail.com', 'f', '2021/06/12', 170, 63)
+acc1=create_account('brianliang','Brian','Liang','brianliang@gmail.com', 'm', '2021/06/12', 164, 63)
+acc2=create_account('paigelin','Paige','Lin','paigelin@gmail.com', 'f', '2021/06/12', 165, 55)
+acc3=create_account('peiyuleu','Andy','Leu','peiyuleu@gmail.com', 'm', '2021/06/12', 165, 55)
+acc4=create_account('juliahuang','Julia','Huang','juliahuang@gmail.com', 'f', '2021/06/12', 170, 63)
 
 accounts = get_account()
 assert len(accounts)==4
@@ -55,7 +55,25 @@ food_list = get_food_list()
 
 # Create meal
 meal_id = create_meal(account.uuid, '2021/06/14 13:10:59', 'lunch')
+meal_id = create_meal(account.uuid, '2021/06/14 19:10:59', 'dinner')
+meal_id = create_meal(account.uuid, '2021/06/15 18:10:59', 'dinner')
+meal_id = create_meal(account.uuid, '2021/06/15 13:10:59', 'lunch')
+meal_id = create_meal(account.uuid, '2021/06/16 08:10:59', 'breakfast')
 add_food_to_meal(meal_id,3) # Food id of 3 is spaghetti
+meal_list = get_account_all_meals(account.uuid)
+
+
+# Create sports
+gen1=create_genre('Outdoor')
+gen2=create_genre('Indoor')
+gen3=create_genre('Cardio')
+gen4=create_genre('Intense')
+
+
+sport1=create_sport('swim',300,30,[1])
+sport2=create_sport('tennis',200,30,[1,2])
+sport3=create_sport('yoga',150,20,[2,3])
+sport4=create_sport('volleyball',100,10,[1,2,4])
 
 
 
