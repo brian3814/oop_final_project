@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS SportsGenre(
 
 --Command to create sport table--
 CREATE TABLE IF NOT EXISTS Sport(
-    sport_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     sport_name VARCHAR(25) NOT NULL,
     calories_burned_per_hr REAL NOT NULL,
     basic_continuous_time REAL NOT NULL
