@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --Command to create food table--
 CREATE TABLE IF NOT EXISTS Food (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  food_name VARCHAR ( 25 )  NOT NULL,
+  name VARCHAR ( 25 )  NOT NULL,
   carb REAL CHECK(carb>0) NOT NULL ,
   protein REAL CHECK(protein>0) NOT NULL,
   fat REAL CHECK(fat>0) NOT NULL
@@ -15,22 +15,24 @@ CREATE TABLE IF NOT EXISTS Meal(
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     meal_time DATE NOT NULL,
     meal_desc VARCHAR (25) NOT NULL,
-    intake INTEGER NOT NULL
+    intake INTEGER[] 
 );
 
 --Command to create access table--
 CREATE TABLE  IF NOT EXISTS Access(
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     --access_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP--
-    email VARCHAR(50) NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL
 );
 
 --Command to create account table--
 CREATE TABLE IF NOT EXISTS Account(
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    account_name VARCHAR (25) NOT NULL,
-    --email VARCHAR (50) UNIQUE NOT NULL,--
+    uuid uuid DEFAULT uuid_generate_v4() NOT NULL,
+    account_name VARCHAR(25) NOT NULL,
+    first_name VARCHAR (25) NOT NULL,
+    last_name VARCHAR (25) NOT NULL,
+    email VARCHAR (50) UNIQUE NOT NULL,
     --pasword VARCHAR (25) NOT NULL,--
     gender VARCHAR (1) NOT NULL CONSTRAINT gender_check CHECK(gender IN ('m','f')),
     birthday DATE NOT NULL,
