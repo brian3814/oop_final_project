@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 psycopg2 = "*"
 pytest = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "*"
