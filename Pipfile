@@ -9,6 +9,7 @@ verify_ssl = true
 psycopg2 = "*"
 pytest = "*"
 python-dateutil = "*"
+flask = "*"
 
 [requires]
 python_version = "*"

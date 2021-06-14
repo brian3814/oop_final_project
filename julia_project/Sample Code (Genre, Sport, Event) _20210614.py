@@ -1,3 +1,11 @@
+from Genre_20210614 import *
+
+print()
+activityFilteredList = []
+genreFilter = Indoor | Static
+genre(genreFilter, activityFilteredList)
+print('filtered list = ' + str(activityFilteredList))
+
 ''' for Genre
 # case 1
 activityFilteredList = []

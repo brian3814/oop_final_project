@@ -6,7 +6,6 @@ from datetime import datetime
 from flask import Flask,jsonify
 from collections import OrderedDict
 
-
 datetime_string_type = '%Y-%m-%d-%H:%M:%S'
 date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
 
@@ -58,6 +57,9 @@ print('\n\n====')
 for date, daliyintake in dailyintake_dict.items():
     print(date,daliyintake.total_intake_calories,daliyintake.meals)
 
+
+
+
 person_query = {'uuid':'qaz2wsx3edc','name':'AAAA','level':'Gold','birthday':datetime.strptime('2000-10-12-18:30:30', datetime_string_type),'height':1.56, 'weight':45, 'gender':'female', 'hobbies':'yoga'}
 person = Person(person_query['name'], person_query['uuid'], person_query['level'], person_query['birthday'], person_query['height'], person_query['weight'], person_query['gender'], person_query['hobbies'])
 person.showInfo()
@@ -66,22 +68,80 @@ person.update_dailyIntakes(dailyintake_dict)
 person.CaloiesIntakeCal('2020-10-11','2020-10-12',date_string_type,date_string_type)
 
 
-#####################################################################################################################
-###############################   API   #############################################################################
-#####################################################################################################################
 
-# api query the info from date to date
+# sport_query = [
+#     {'genre':[]},
+#     ]
+
+#     def __init__(self, genre, activity, hour, weight):
+# #### Genre +
+# #Genretype:
+# notBALL = 0b00000001
+# isBALL = 0b00000010
+# Pearson = 0b00000100
+# Interactive = 0b00001000
+# Dynamic = 0b00010000
+# Static = 0b00100000
+# Outdoor = 0b01000000
+# Indoor = 0b10000000
+# #print(isBALL)
+
+
+# # print(BALL)
+# # print(STATIC)
+# # print(INDOOR)
+
+# #activity=GenreList
+# GenreList = {'BowlingMorePeople': Indoor | Static | Interactive | isBALL,
+#             'YogaMorePeople'    : Indoor | Static | Interactive | notBALL,
+#             'BowlingSingle'     : Indoor | Static | Pearson | isBALL,
+#             'YogaSingle'        : Indoor | Static | Pearson | notBALL,
+#             'Badminton'         : Indoor | Dynamic | Interactive | isBALL,
+#             'Dancing'           : Indoor | Dynamic | Interactive | notBALL,
+#             'ShootingBaskets'   : Indoor | Dynamic | Pearson | isBALL,
+#             'Trampoline'        : Indoor | Dynamic | Pearson | notBALL,
+#             'GolfMorePeople'    : Outdoor | Static | Interactive | isBALL,
+#             'TaiChiMorePeople'  : Outdoor | Static | Interactive | notBALL,
+#             'GolfSingle'        : Outdoor | Static | Pearson | isBALL,
+#             'TaiChi'            : Outdoor | Static | Pearson | notBALL,
+#             'Baseball'          : Outdoor | Dynamic | Interactive | isBALL,
+#             'RunMorePeople'     : Outdoor | Dynamic | Interactive | notBALL,
+#             'BasketballSingle'  : Outdoor | Dynamic | Pearson | isBALL,
+#             'RockClimbing'      : Outdoor | Dynamic | Pearson | notBALL
+#             }
+# print(GenreList)
+
+
+
+app = Flask(__name__)
+
+# Get api list
+@app.route('/api', methods = ['GET'])          
+def get_api_list():             #view
+    routes = []
+    for rule in app.url_map.iter_rules():
+        route = rule.rule.replace('<','&lt').replace('>' ,'&gt')
+        routes.append(route)
+    result = "<h4>{}</h4>".format('</h4><h4>'.join(routes[:-1]))
+    return result 
+
+@app.route("/")
+def hello():
+    return "Hello World!"
+
+@app.route("/caloiesIntakeCal")
 def caloiesIntakeCal():
     result = person.CaloiesIntakeCal('2020-10-11','2020-10-12',date_string_type,date_string_type)
     dailyIntake_dict= OrderedDict()
     for date, daily in result['dailyIntakes'].items():
         dailyIntake_dict[date]=daily.meal_detail()
-    return OrderedDict([
-        ("name",person.name),
-        ("period",'{} to {}'.format('2020-10-11','2020-10-12')),
-        ("CaloiesIntakeCal",result['result']),
-        ("Intakes",dailyIntake_dict)
-    ])
-print(caloiesIntakeCal())
+    return {
+        "name":person.name,
+        "period": '{} to {}'.format('2020-10-11','2020-10-12'),
+        "CaloiesIntakeCal":result['result'],
+        "Intakes":dailyIntake_dict
+        }
 
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
