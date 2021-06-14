@@ -7,6 +7,7 @@ verify_ssl = true
 
 [packages]
 psycopg2 = "*"
+pytest = "*"
 
 [requires]
 python_version = "*"
