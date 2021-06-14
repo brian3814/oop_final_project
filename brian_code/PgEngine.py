@@ -100,12 +100,16 @@ def sign_up_event():
 
 # Accout related
 def create_account(account_name,first_name,last_name,email,gender,birthday,height,weight):
-    create_account_query ="""INSERT INTO Account (account_name,first_name,last_name,email,gender,birthday,height,weight) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)""" 
+    create_account_query ="""
+        INSERT INTO Account (account_name,first_name,last_name,email,gender,birthday,height,weight) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s) 
+        RETURNING row_to_json(Account)   
+    """ 
     values =(account_name,first_name,last_name,email,gender,birthday,height,weight)
-    execute(create_account_query,values)
+    result = execute(create_account_query,values)
     info = 'Account: {} has been created sucessfully'.format(account_name)
     logger.info(info)
-    print(info)
+    return result[0]
 
 def get_account():
     sql_query ="""SELECT row_to_json(Account) FROM Account;""" 
@@ -166,18 +170,63 @@ def add_food_to_meal(meal_id,food_id):
     execute(add_food_to_meal_query,values)
     pass
 
-def get_meals_in_interval():
-    # get_meal_query="""SELECT """
-    # execute(get_meal_query)
+def get_account_all_meals(user_id):
+    get_all_meals = """
+        SELECT row_to_json(Meal)
+        FROM Meal
+        WHERE id=ANY(
+            SELECT unnest(meal)
+            FROM Account 
+            WHERE uuid = %s
+        )
+    """
+
+    values=(user_id,)
+    result = execute(get_all_meals,values)
+    return result
+
+def get_daily_intake(user_id, start_date, end_date):
+    #get_meal_query="""SELECT """
+    #execute(get_meal_query)
     pass
 
 # Sports related
-def get_sport_info():
-    get_sport_info_query="""
-    
+def create_genre(genre_desc):
+    create_genre="""INSERT INTO Genre (description) 
+        VALUES (%s)
+        RETURNING row_to_json(Genre)
     """
-    execute(get_sport_info_query)
+    values=(genre_desc,)
+    result=execute(create_genre,values)
+    info = 'Genre: {} has been created sucessfully'.format(genre_desc)
+    logger.info(info)
+    return result
 
+def get_genre(genre_id):
+    get_genre="""
+        SELECT row_to_json(Genre) FROM Genre
+        WHRER id = %s
+    """
+    values = (genre_id)
+    result = execute(get_genre)
+    return result
+
+def create_sport(sport_name,calories_burned_per_hr,basic_continuous_time,genre=[]):
+    create_sport="""
+        WITH ins1 AS(
+            INSERT INTO Sport (sport_name,calories_burned_per_hr,basic_continuous_time)
+            VALUES (%s,%s,%s)
+            RETURNING id AS sport_id
+        )
+        INSERT INTO SportsGenre (sport_id, genre_id)
+        SELECT ins1.sport_id, %s
+        FROM ins1
+    """
+    values = (sport_name,calories_burned_per_hr,basic_continuous_time,genre)
+    execute(create_sport,values)
+
+def get_sport_genre():
+    pass
 
 # ORM related
 def orm_factory(target_class,info):
