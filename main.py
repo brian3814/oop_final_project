@@ -10,6 +10,7 @@ from collections import OrderedDict
 datetime_string_type = '%Y-%m-%d-%H:%M:%S'
 date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
 
+#############################
 food_qrery = [
     {'name':'apple','carb':70,'protein':10,'fat':0.5},
     {'name':'banana','carb':90,'protein':2,'fat':0.1},
@@ -58,13 +59,36 @@ print('\n\n====')
 for date, daliyintake in dailyintake_dict.items():
     print(date,daliyintake.total_intake_calories,daliyintake.meals)
 
+########################
+event_query = [
+    {'sports':[{'sport':'YogaMorePeople','duration':3},{'sport':'GolfMorePeople','duration':1.5}],'time':datetime.strptime('2020-10-10-18:30:30', datetime_string_type)},
+    {'sports':[{'sport':'Baseball','duration':1},{'sport':'ShootingBaskets','duration':1.5}],'time':datetime.strptime('2020-10-11-18:30:30', datetime_string_type)},
+    {'sports':[{'sport':'GolfMorePeople','duration':2}],'time':datetime.strptime('2020-10-12-12:30:30', datetime_string_type)},
+    {'sports':[{'sport':'YogaMorePeople','duration':1.5}],'time':datetime.strptime('2020-10-12-18:30:30', datetime_string_type)},
+]
+
+
+dailyEvents_dict = OrderedDict()
+for event in event_query:
+    if dailyEvents_dict.get(event['time'].strftime(date_string_type),None) == None:
+        dailyEvents_dict[event['time'].strftime(date_string_type)]=DailyConsumeCalories(event['time'])
+    events = [(sport_dict['sport'],sport_dict['duration']) for sport_dict in event['sports']]
+    UserEvent = Event()
+    totalCalories = UserEvent.GetConsumedCalories(events)
+    totalgenres = UserEvent.get_genre()
+    dailyEvents_dict[event['time'].strftime(date_string_type)].add_event({'sports':events,'totalCalories':totalCalories,'totalgenres':totalgenres})
+
+#################
+
 person_query = {'uuid':'qaz2wsx3edc','name':'AAAA','level':'Gold','birthday':datetime.strptime('2000-10-12-18:30:30', datetime_string_type),'height':1.56, 'weight':45, 'gender':'female', 'hobbies':'yoga'}
 person = Person(person_query['name'], person_query['uuid'], person_query['level'], person_query['birthday'], person_query['height'], person_query['weight'], person_query['gender'], person_query['hobbies'])
 person.showInfo()
 person.update_dailyIntakes(dailyintake_dict)
+person.update_dailyEvents(dailyEvents_dict)
 
 person.CaloiesIntakeCal('2020-10-11','2020-10-12',date_string_type,date_string_type)
-
+person.CaloiesConsumeCal('2020-10-11','2020-10-12',date_string_type,date_string_type)
+print('end')
 
 #####################################################################################################################
 ###############################   API   #############################################################################

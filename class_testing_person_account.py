@@ -1,12 +1,14 @@
-from utils import *
 from datetime import datetime
-
+from _class.person import *
+from _class.Intake import *
+from _class.Genre import *
+from _class.Event import *
 
 if __name__ == '__main__':
-    paige = Person('Paige', 0, 'premium', datetime(1987,6,5), 1.62, 54, 'female', 'yoga')
-
-    paige.showInfo()
-    # paige.FollowFriend('julia')
-    # paige.showFriendList()
-    # paige.RemoveFriend('Julia')
+    UserEvent = Event()
+    event = (('YogaMorePeople', 3), ('ShootingBaskets', 5))  # sport: time
+    totalCalories = UserEvent.GetConsumedCalories(event)
+    totalgenres = UserEvent.get_genre()
+    print(totalCalories)
+    print(totalgenres)
 
