@@ -74,7 +74,7 @@ class Person(Account):
         self.eventList = []  # stores hosted events & joined events
         self.friendsList = []
         self.__dailyIntakes = {}
-        self.dailyEvents = {}
+        self.__dailyEvents = {}
 
 
     def showInfo(self):
@@ -87,6 +87,9 @@ class Person(Account):
 
     def update_dailyIntakes(self,inTakes):
         self.__dailyIntakes = inTakes
+
+    def update_dailyEvents(self,events):
+        self.__dailyEvents = events
 
     # ===============
     # calories
@@ -109,6 +112,24 @@ class Person(Account):
         print('{} Intake {} Caloies from {} to {}'.format(self.name,result,start_d,end_d))
         return {'result':result,"dailyIntakes":between_dict}
 
+    def CaloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
+        # __dailyIntakes = {'2020-10-10': Daily{date:,meals},}
+        t_formats = t_format.split(t_format[2])
+        index = [t_formats.index('%Y') if '%Y' in t_formats else None,t_formats.index('%m') if '%m' in t_formats else None,t_formats.index('%d') if '%d' in t_formats else None]
+        if None in index: raise Exception('{} fails to contian %Y %m %d'.format(t_format))
+        # datetime_string_type = '%Y-%m-%d
+        start = datetime.strptime(start_d, i_format).strftime(t_format).split(t_format[2])
+        end = datetime.strptime(end_d, i_format).strftime(t_format).split(t_format[2])
+
+        between_dict = {}
+        for date in self._Person__dailyEvents.keys():
+            year, mouth, day = date.split(t_format[2])
+            if all([start[index[0]]<= year <=end[index[0]],start[index[1]]<= mouth <=end[index[1]],start[index[2]]<= day <=end[index[2]]]) == True:
+                between_dict[date]=self._Person__dailyEvents[date]
+        
+        result = sum([daily.total_consume_calories for __,daily in between_dict.items()])
+        print('{} Consume {} Caloies from {} to {}'.format(self.name,result,start_d,end_d))
+        return {'result':result,"dailyEvents":between_dict}
 
     # ===============
     # friens follow & unfollow

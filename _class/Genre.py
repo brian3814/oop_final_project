@@ -10,29 +10,25 @@ Outdoor = 0b01000000
 Indoor = 0b10000000
 #print(isBALL)
 
-# print(BALL)
-# print(STATIC)
-# print(INDOOR)
-
 #activity=GenreList
 GenreList = {'BowlingMorePeople': Indoor | Static | Interactive | isBALL,
-            'YogaMorePeople'    : Indoor | Static | Interactive | notBALL,
-            'BowlingSingle'     : Indoor | Static | Pearson | isBALL,
-            'YogaSingle'        : Indoor | Static | Pearson | notBALL,
-            'Badminton'         : Indoor | Dynamic | Interactive | isBALL,
-            'Dancing'           : Indoor | Dynamic | Interactive | notBALL,
-            'ShootingBaskets'   : Indoor | Dynamic | Pearson | isBALL,
-            'Trampoline'        : Indoor | Dynamic | Pearson | notBALL,
-            'GolfMorePeople'    : Outdoor | Static | Interactive | isBALL,
-            'TaiChiMorePeople'  : Outdoor | Static | Interactive | notBALL,
-            'GolfSingle'        : Outdoor | Static | Pearson | isBALL,
-            'TaiChi'            : Outdoor | Static | Pearson | notBALL,
-            'Baseball'          : Outdoor | Dynamic | Interactive | isBALL,
-            'RunMorePeople'     : Outdoor | Dynamic | Interactive | notBALL,
-            'BasketballSingle'  : Outdoor | Dynamic | Pearson | isBALL,
-            'RockClimbing'      : Outdoor | Dynamic | Pearson | notBALL
+             'YogaMorePeople'   : Indoor | Static | Interactive | notBALL,
+             'BowlingSingle'    : Indoor | Static | Pearson | isBALL,
+             'YogaSingle'       : Indoor | Static | Pearson | notBALL,
+             'Badminton'        : Indoor | Dynamic | Interactive | isBALL,
+             'Dancing'          : Indoor | Dynamic | Interactive | notBALL,
+             'ShootingBaskets'  : Indoor | Dynamic | Pearson | isBALL,
+             'Trampoline'       : Indoor | Dynamic | Pearson | notBALL,
+             'GolfMorePeople'   : Outdoor | Static | Interactive | isBALL,
+             'TaiChiMorePeople' : Outdoor | Static | Interactive | notBALL,
+             'GolfSingle'       : Outdoor | Static | Pearson | isBALL,
+             'TaiChi'           : Outdoor | Static | Pearson | notBALL,
+             'Baseball'         : Outdoor | Dynamic | Interactive | isBALL,
+             'RunMorePeople'    : Outdoor | Dynamic | Interactive | notBALL,
+             'BasketballSingle' : Outdoor | Dynamic | Pearson | isBALL,
+             'RockClimbing'     : Outdoor | Dynamic | Pearson | notBALL
             }
-print(GenreList)
+#print(GenreList)
 
 
 def genre(genreFilter, filteredList):
@@ -42,4 +38,4 @@ def genre(genreFilter, filteredList):
     for index in range(len(GenreList)):
         if (tmpGenreList[index] & genreFilter == genreFilter):
             filteredList.append(tmpActivity[index])
-            # print('filtered list = ' + str(filteredList))
+            #print('filtered list = ' + str(filteredList))
