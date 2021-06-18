@@ -1,5 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from _class.Event import *
 
 class Account():
     def __init__(self, uuid, name, level):
@@ -68,7 +69,8 @@ class Person(Account):
                     }
         self.gmr = gmr_table[gender] if gmr_table.get(gender) else -1
         if self.gmr != -1:
-            print("基礎代謝率(大卡)：", self.gmr)
+            # print("基礎代謝率(大卡)：", self.gmr)
+            pass
         else:
             Exception('{} is not in the allowed list [{}]}'.format(gender,gmr_table.keys()))
         self.eventList = []  # stores hosted events & joined events
@@ -93,7 +95,7 @@ class Person(Account):
 
     # ===============
     # calories
-    def CaloiesIntakeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
+    def caloiesIntakeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
         # __dailyIntakes = {'2020-10-10': Daily{date:,meals},}
         t_formats = t_format.split(t_format[2])
         index = [t_formats.index('%Y') if '%Y' in t_formats else None,t_formats.index('%m') if '%m' in t_formats else None,t_formats.index('%d') if '%d' in t_formats else None]
@@ -112,7 +114,7 @@ class Person(Account):
         print('{} Intake {} Caloies from {} to {}'.format(self.name,result,start_d,end_d))
         return {'result':result,"dailyIntakes":between_dict}
 
-    def CaloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
+    def caloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
         # __dailyIntakes = {'2020-10-10': Daily{date:,meals},}
         t_formats = t_format.split(t_format[2])
         index = [t_formats.index('%Y') if '%Y' in t_formats else None,t_formats.index('%m') if '%m' in t_formats else None,t_formats.index('%d') if '%d' in t_formats else None]

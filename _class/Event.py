@@ -105,7 +105,7 @@ class Sport:
     # for calories computing, ConsumedInInterval for Event 計算用
     def GetConsumedCalories(self):
         burnedCalories = self.__hour * self.__getCaloriesPerHour()
-        print(str(self.__hour) + ' * ' + str(self.__getCaloriesPerHour()) + ' = ' + str(burnedCalories))
+        # print(str(self.__hour) + ' * ' + str(self.__getCaloriesPerHour()) + ' = ' + str(burnedCalories))
         return burnedCalories
 
     #user設定要達到運動效果
@@ -123,7 +123,7 @@ class Sport:
     # user設定運動效果用
     def GetbasicConsumption(self):  # one activity
         basicconsumption = self.basiccontinuoustime * self.__getCaloriesPerHour()
-        print(str(self.basiccontinuoustime) + ' * ' + str(self.__getCaloriesPerHour()) + ' = ' + str(basicconsumption))
+        # print(str(self.basiccontinuoustime) + ' * ' + str(self.__getCaloriesPerHour()) + ' = ' + str(basicconsumption))
         return basicconsumption
 
 
@@ -140,16 +140,16 @@ class Event:
     # API
     # for calories computing
     def GetConsumedCalories(self, event):  # event=sport set
-        print(event)
+        # print(event)
 
         self.__activityList,self.__timeList = zip(*event)
 
         for index in range(len(tuple(event))):
-            print(' ---- ' + str(index))
-            print(self.__activityList[index])
+            # print(' ---- ' + str(index))
+            # print(self.__activityList[index])
             self.__sport.SetActivity(self.__activityList[index])  # 引入Class Sport裡面的SetActivity
 
-            print(self.__timeList[index])
+            # print(self.__timeList[index])
             self.__sport.SetHour(self.__timeList[index])  # 引入Class Sport裡面的SetHour
 
             self.__totalCalories += self.__sport.GetConsumedCalories()
