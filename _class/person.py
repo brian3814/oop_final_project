@@ -90,6 +90,9 @@ class Person(Account):
     def update_dailyIntakes(self,inTakes):
         self.__dailyIntakes = inTakes
 
+    def get_dailyIntakes(self):
+        return self.__dailyIntakes
+
     def update_dailyEvents(self,events):
         self.__dailyEvents = events
 
