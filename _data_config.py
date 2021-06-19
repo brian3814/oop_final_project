@@ -5,17 +5,21 @@ from _class.Genre import *
 from _class.Event import *
 from PgEngine import *
 
-datetime_string_type = '%Y-%m-%d-%H:%M:%S'
-date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
-
-
-food_query = []
-meal_query = []
-person_query = {}
-event_query = []
+datetime_string_type_with_time = '%Y-%m-%d-%H:%M:%S'
+date_string_type = '-'.join(datetime_string_type_with_time.split('-')[0:3])
 
 
 class loginger:
+
+    # Declare as global variable to solve issue of query still empty after initilize 
+    # if declared globally because loginger assigns to varaiable as local variable 
+    # within local namesapace
+    global food_query 
+    global meal_query 
+    global person_query 
+    global event_query 
+
+
     def __init__(self):
         self.__success = False
         self.__account_info =None
@@ -45,10 +49,11 @@ class loginger:
         meal_query=get_account_all_meals(self.__account_info['id'])
         person_query = get_person(self.__account_info['id'])
         event_query =get_events()
-        return self.__account_info['name']
+        return DataCollecter(food_query,meal_query,event_query,person_query)
+
 
 class DataCollecter:
-    def __init__(self):
+    def __init__(self,food_query,meal_query,event_query,person_query):
         self.__food_dict = self.query_food_info(food_query)
         self.__dailyintake_dict = self.query_meal_info(meal_query)
         self.__dailyEvents_dict = self.query_event_info(event_query)
@@ -72,8 +77,8 @@ class DataCollecter:
 
 
     #################
-    def query_food_info(self,food_qrery):
-        food_dict = {food['name']:Food(food['name'],food['carb'],food['protein'],food['fat']) for food in food_qrery}
+    def query_food_info(self,food_query):
+        food_dict = {food['name']:Food(food['name'],food['carb'],food['protein'],food['fat']) for food in food_query}
         return food_dict
 
     def query_meal_info(self,meal_query):

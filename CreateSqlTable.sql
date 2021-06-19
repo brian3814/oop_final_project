@@ -98,7 +98,7 @@ VALUES
     (3,'Julia','Julia','person','female','2000-03-01',45,170),
     (4,'Brian','Brian','person','male','2000-04-01',65,175),
     (5,'guest','guest','person','male','1911-10-10',70,180),
-    (6,'ihateoop','just kidding','person','unknown','1970-01-01',100,0);
+    (6,'ihateoop','just kidding','person','male','1970-01-01',100,1);
 
 
 CREATE TABLE IF NOT EXISTS Level(

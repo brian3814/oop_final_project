@@ -18,8 +18,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 # Datetime format
-datetime_string_type = '%Y-%m-%dT%H:%M:%S'
-date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
+datetime_string_type_with_time = '%Y-%m-%dT%H:%M:%S'
+datetime_string_type_without_time = '%Y-%m-%d'
+
 
 # Read setting
 setting={}
@@ -147,7 +148,9 @@ def get_person(access_id):
     """
     values = (access_id,)
     result= execute(get_person_query,values)
-    logger.info('Returned person:{}'.format(result[0][0]))
+    for p in result:
+        p[0]['birthday'] = datetime.strptime(p[0]['birthday'],datetime_string_type_without_time) 
+    logger.info('Returned person:{}'.format(result))
     return result[0][0]
 
 def get_friend_list():
@@ -182,8 +185,13 @@ def create_food(food_name,carb,protein,fat):
 
 def get_food_list():
     get_food_list_query="""
-        SELECT row_to_json(food)
-        FROM food 
+        SELECT json_build_object(
+            'name',f.food_name,
+            'carb',f.carb,
+            'protein',f.protein,
+            'fat',f.fat
+        )
+        FROM food f
     """
 
     result = [r[0] for r in execute(get_food_list_query)]
@@ -244,7 +252,7 @@ def get_account_all_meals(access_id):
     logger.info('Meals of account fetched:{}'.format(result))
         
     for m in result:
-        m[0]['time'] = datetime.strptime(m[0]['time'],date_string_type)
+        m[0]['time'] = datetime.strptime(m[0]['time'],datetime_string_type_with_time).date
     return [m[0] for m in result]
 
 def get_all_meals():
@@ -285,7 +293,7 @@ def get_events():
                 ARRAY(
                     SELECT json_build_object(
                         'sport', s.sport_name,
-                        'duartion', EXTRACT(epoch FROM ev.duration)/3600
+                        'duration', EXTRACT(epoch FROM ev.duration)/3600
                     ) 
                     FROM UNNEST(e.event_contents) WITH ORDINALITY AS ec(ec_id,ord)
                     LEFT JOIN Event_content ev
@@ -298,7 +306,12 @@ def get_events():
             ON a.id = e.host
         ) event
     """
+    
     result = execute(get_events_query)
+    for e in result:
+        e[0]['time'] = datetime.strptime(e[0]['time'],datetime_string_type_without_time)
+        
+
     return [e[0] for e in result]
 
 def create_genre(genre_desc):
