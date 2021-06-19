@@ -122,7 +122,7 @@ class Person(Account):
                 between_dict[date]=self._Person__dailyIntakes[date]
         
         result = sum([daily.total_intake_calories for __,daily in between_dict.items()])
-        print('{} Intake {} Caloies from {} to {}'.format(self.name,result,start_d,end_d))
+        print('{} Intake {} Caloies from {} to {}'.format(self.name.split( )[0],result,start_d,end_d))
         return {'result':result,"dailyIntakes":between_dict}
 
     def caloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
@@ -141,7 +141,7 @@ class Person(Account):
                 between_dict[date]=self._Person__dailyEvents[date]
         
         result = sum([daily.total_consume_calories for __,daily in between_dict.items()])
-        print('{} Consume {} Caloies from {} to {}'.format(self.name,result,start_d,end_d))
+        print('{} Consume {} Caloies from {} to {}'.format(self.name.split( )[0],result,start_d,end_d))
         return {'result':result,"dailyEvents":between_dict}
 
     # ===============
