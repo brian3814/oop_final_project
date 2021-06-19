@@ -55,14 +55,15 @@ class Food:
             self.__calories = float(carb*4 + protein*4 + fat*9)
     
 class Meal:
-    def __init__(self, name, time=None, inTake=[]):
+    def __init__(self, name, time=None, inTake=[],food_dict={}):
         self.name = str(name)
         self.__is_init = True
         self.inTake = inTake 
         self.time = time 
         self.totalCalories = None
         self.food_table = {food['name']:Food(name=food['name'],carb=food['carb'],protein=food['protein'],fat=food['fat']) for food in food_qrery}
-
+        # self.food_table = food_dict
+        
     @property
     def time(self):
         return self.__time

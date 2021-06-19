@@ -52,7 +52,7 @@ class loginger:
         meal_query=get_account_all_meals(self.__account_info['id'])
         person_query = get_person(self.__account_info['id'])
         event_query =get_events()
-        return DataCollecter(food_query,meal_query,event_query,person_query)
+        return DataCollecter(food_query,meal_query,event_query,person_query),{'food_list':food_query}
 
 
 class DataCollecter:
@@ -90,7 +90,7 @@ class DataCollecter:
         for data in meal_query:
             if dailyintake_dict.get(data['time'].strftime(date_string_type),None) == None:
                 dailyintake_dict[data['time'].strftime(date_string_type)]=DailyIntakeCalories(data['time'])
-            inTake=[self.food_dict[food_n] for food_n in data['inTake']]
+            inTake=[self.food_dict[food_n] for food_n in data['intake']]
             dailyintake_dict[data['time'].strftime(date_string_type)].add_meal(Meal(data['name'],data['time'],inTake))
         return dailyintake_dict
 
@@ -113,4 +113,5 @@ class DataCollecter:
     def give_me_a_person_with_data(self):
         self.__person.update_dailyIntakes(self.__dailyintake_dict)
         self.__person.update_dailyEvents(self.__dailyEvents_dict)
+        self.__person.add_food_info(self.__food_dict)
         return self.__person

@@ -77,7 +77,9 @@ class Person(Account):
         self.friendsList = []
         self.__dailyIntakes = {}
         self.__dailyEvents = {}
-
+        #######################
+        self.food_dict = {}
+        self.sport_dict = {}
 
     def showInfo(self):
         print("User Info:")
@@ -95,6 +97,12 @@ class Person(Account):
 
     def update_dailyEvents(self,events):
         self.__dailyEvents = events
+
+    def add_food_info(self,food_dict):
+        self.food_dict = food_dict
+
+    def add_food_info(self,food_dict):
+        self.sport_dict = food_dict   
 
     # ===============
     # calories

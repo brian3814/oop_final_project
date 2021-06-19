@@ -307,7 +307,7 @@ def get_account_all_meals(access_id):
     logger.info('Meals of account fetched:{}'.format(result))
         
     for m in result:
-        m[0]['time'] = datetime.strptime(m[0]['time'],datetime_string_type_with_time).date
+        m[0]['time'] = datetime.strptime(m[0]['time'],datetime_string_type_with_time)
     return [m[0] for m in result]
 
 def get_all_meals():
