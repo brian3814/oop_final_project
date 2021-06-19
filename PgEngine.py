@@ -33,7 +33,11 @@ def read_setting():
 read_setting()
 
 def execute(query_string,values=None):
-    conn = build_connection()
+    conn = build_connection_with_db()
+
+    if conn==None:
+        return None
+
     cur = conn.cursor()
     exe_result = None
 
@@ -52,24 +56,63 @@ def execute(query_string,values=None):
 
     return exe_result 
 
-def build_connection():
+def build_connection_with_server():
     if setting is None:
         logger.error('Setting required to build connection')
         return None
 
-    conn_init = psycopg2.connect(
-        host = setting['host'],
-        port = setting['port'],
-        database = setting['database'],
-        user = setting['username'], 
-        password = setting['password'])
+    try:
+        conn_init = psycopg2.connect(
+            host = setting['host'],
+            port = setting['port'],
+            user = setting['username'], 
+            password = setting['password'])
 
-    conn_init.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+        conn_init.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+
+    except:
+        logger.error("Failed to build connection with server:{}".format(setting))
+        return None 
 
     return conn_init
 
+def build_connection_with_db():
+    if setting is None:
+        logger.error('Setting required to build connection')
+        return None
+
+    try:
+        conn_init = psycopg2.connect(
+            host = setting['host'],
+            port = setting['port'],
+            database = setting['database'],
+            user = setting['username'], 
+            password = setting['password'])
+
+        conn_init.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+    except:
+        logger.error("Failed to build connection with database:{}".format(setting))
+        return None 
+
+    return conn_init
+
+def init_db():
+    if not check_db_exist(setting['database']):
+        
+        with open('{}/CreateSqlTable.sql'.format(os.path.dirname(__file__)),'r',encoding='utf-8') as create_table_sql:
+            conn1= build_connection_with_server()
+            cur1 = conn1.cursor()
+            cur1.execute("""CREATE DATABASE {};""".format(setting['database']));
+            conn1.commit()
+
+            conn2 =build_connection_with_db()
+            cur2 = conn2.cursor()
+            cur2.execute(create_table_sql.read())
+
+        logger.info('Database created:{}'.format(setting))
+
 def check_db_exist(db_name):
-    conn = build_connection()
+    conn = build_connection_with_server()
     cur= conn.cursor()
     cur.execute("""SELECT datname FROM pg_database;""")
     result = cur.fetchall()
@@ -91,15 +134,15 @@ def check_access(email,password):
             'id',account.id,
             'name',account.first_name
         ) 
-        FROM access
-        LEFT JOIN account 
-        ON access.id = account.id
-        WHERE access.email = %s
-        AND access.password = %s
+        FROM Account
+        LEFT JOIN Access 
+        ON Access.id = Account.id
+        WHERE Access.email = %s
+        AND Access.password = %s
     """
     values =(email,password)
     result = execute(check_access_query,values)
-    return result[0][0] if len(result)==1 else None
+    return result[0][0] if result !=None and len(result)==1 else None
 
 # Accout related
 def create_account(account_type,first_name,last_name,gender,birthday,height,weight):
@@ -198,19 +241,31 @@ def get_food_list():
     logger.info(result)
     return result
 
+def get_food_index_by_name(food_name):
+    get_food_index="""
+        SELECT f.id
+        FROM Food f
+        WHERE f.food_name= %s
+    """
+    values = (food_name,)
+    result=execute(get_food_index,values)
+    return result[0][0]
+
 def create_meal(user_id, meal_time , meal_desc, intake=[]):
+    intake = [get_food_index_by_name(f) if type(f)!= int else f for f in intake]
+
     create_meal_query="""
         WITH ins1 AS(
-            INSERT INTO Meal (meal_time,meal_desc,intake)
-            VALUES (%s,%s,%s) 
+            INSERT INTO Meal (account_id,meal_time,meal_desc,intake)
+            VALUES (%s,%s,%s,%s) 
             RETURNING id AS meal_id 
         )
         UPDATE Account 
-        SET meal = array_append(meal, ins1.meal_id)
+        SET meals = array_append(meals, ins1.meal_id)
         FROM ins1
         WHERE Account.id = %s
         RETURNING ins1.meal_id;"""
-    values=(meal_time,meal_desc,intake,user_id)
+    values=(user_id,meal_time,meal_desc,intake,user_id)
     result = execute(create_meal_query,values)[0][0]   
 
     info = 'Meal: {} has been created sucessfully'.format(meal_desc)
@@ -351,6 +406,7 @@ def create_sport(sport_name,calories_burned_per_hr,basic_continuous_time,genre=[
 def get_sport_genre():
     pass
 
+'''
 # ORM related
 def orm_factory(target_class,info):
     if target_class =='Person':
@@ -369,11 +425,5 @@ def orm_test():
         print('Accounts: {}'.format(result[i]))
 
     return [orm_factory('Person',i[0]) for i in result]
-
-
 '''
-if not check_db_exist(setting['database']):
-    execute("""CREATE DATABASE {};""".format(setting['database']));
-    with open('{}/CreateSqlTable.sql'.format(os.path.dirname(__file__)),'r',encoding='utf-8') as create_table_sql:
-        execute(create_table_sql.read())
-'''
+

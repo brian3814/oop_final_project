@@ -31,6 +31,9 @@ class loginger:
     def run(self):
         print('Hello, my friend. Stay awhile and listen ')
         times = 1
+
+        init_db()
+
         while(not self._loginger__success and times<=3):
             email = input("Enter your email:")
             password = input("Enter your password:")
