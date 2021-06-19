@@ -56,10 +56,15 @@ if __name__ == '__main__':
     # paige.showFriendList()
     # paige.RemoveFriend('Julia')
 
-    person_query = {'uuid':'qaz2wsx3edc','name':'AAAA','level':'Gold','birthday':datetime.strptime('2000-10-12-18:30:30', datetime_string_type),'height':1.56, 'weight':45, 'gender':'female', 'hobbies':'yoga'}
+
+
+    # 還沒有person，建立一個
+    person_query = {'uuid':'qaz2wsx3edc','name':'AAAA','level':'Gold','birthday':datetime.strptime('2000-10-12-18:30:30', datetime_string_type),'height':156, 'weight':45, 'gender':'female', 'hobbies':'yoga'}
     person = Person(person_query['name'], person_query['uuid'], person_query['level'], person_query['birthday'], person_query['height'], person_query['weight'], person_query['gender'], person_query['hobbies'])
     person.showInfo()
 
+
+    # 開始準備資料!!!
     new_meal_info = {'name':'breakfirst','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-10-08:30:30', datetime_string_type)}
     meal = Meal(name=new_meal_info['name'], time=new_meal_info['time'])
     meal.add_food(new_meal_info['inTake'])
@@ -67,7 +72,7 @@ if __name__ == '__main__':
 
     # new_meal_info to new dailyintake_dict
     print('\nnew_meal_info to new dailyintake_dict')
-    dailyintake_dict = OrderedDict()
+    dailyintake_dict = {}
     for data in [new_meal_info]:
         if dailyintake_dict.get(data['time'].strftime(date_string_type),None) == None:
             dailyintake_dict[data['time'].strftime(date_string_type)]=DailyIntakeCalories(data['time'])
@@ -75,10 +80,13 @@ if __name__ == '__main__':
         new_meal.add_food(new_meal_info['inTake'])
         dailyintake_dict[data['time'].strftime(date_string_type)].add_meal(new_meal)
 
-    print('===tak a look===')
-    for date, daliyintake in dailyintake_dict.items():
+    person.update_dailyIntakes(dailyintake_dict)
+
+    print('===tak a look from person===')
+    for date, daliyintake in person.get_dailyIntakes().items():
         print(date,daliyintake.total_intake_calories)
         print(daliyintake.meal_summary())
+
 
     # new_meal_info to existed dailyintake_dict
     print('\nnew_meal_info to existed dailyintake_dict')
@@ -90,9 +98,12 @@ if __name__ == '__main__':
         new_meal.add_food(new_meal_info['inTake'])
         dailyintake_dict[data['time'].strftime(date_string_type)].add_meal(new_meal)
 
-    print('===tak a look===')
-    for date, daliyintake in dailyintake_dict.items():
+
+    person.update_dailyIntakes(dailyintake_dict)
+
+    print('===tak a look from person===')
+    for date, daliyintake in person.get_dailyIntakes().items():
         print(date,daliyintake.total_intake_calories)
         print(daliyintake.meal_summary())
-    
+
 
