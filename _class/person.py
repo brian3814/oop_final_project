@@ -72,7 +72,7 @@ class Person(Account):
             # print("基礎代謝率(大卡)：", self.gmr)
             pass
         else:
-            Exception('{} is not in the allowed list [{}]}'.format(gender,gmr_table.keys()))
+            Exception('{} is not in the allowed list [{}]'.format(gender,gmr_table.keys()))
         self.eventList = []  # stores hosted events & joined events
         self.friendsList = []
         self.__dailyIntakes = {}

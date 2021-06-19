@@ -1,71 +1,43 @@
-
 from datetime import datetime
 from _class.person import *
 from _class.Intake import *
 from _class.Genre import *
 from _class.Event import *
+from PgEngine import *
 
+datetime_string_type_with_time = '%Y-%m-%d-%H:%M:%S'
+date_string_type = '-'.join(datetime_string_type_with_time.split('-')[0:3])
 
-datetime_string_type = '%Y-%m-%d-%H:%M:%S'
-date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
-
-food_qrery = [
-    {'name':'apple','carb':70,'protein':10,'fat':0.5},
-    {'name':'banana','carb':90,'protein':2,'fat':0.1},
-    {'name':'orange','carb':40,'protein':8,'fat':0},
-    {'name':'burger','carb':60,'protein':20,'fat':10},
-]
-
-event_query = [
-    {'sports':[{'sport':'YogaMorePeople','duration':3},{'sport':'GolfMorePeople','duration':1.5}],'time':datetime.strptime('2020-10-10-18:30:30', datetime_string_type)},
-    {'sports':[{'sport':'Baseball','duration':1},{'sport':'ShootingBaskets','duration':1.5}],'time':datetime.strptime('2020-10-11-18:30:30', datetime_string_type)},
-    {'sports':[{'sport':'GolfMorePeople','duration':2}],'time':datetime.strptime('2020-10-12-12:30:30', datetime_string_type)},
-    {'sports':[{'sport':'YogaMorePeople','duration':1.5}],'time':datetime.strptime('2020-10-12-18:30:30', datetime_string_type)},
-]
-
-meal_query = [
-    {'name':'breakfirst','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-10-08:30:30', datetime_string_type)},
-    {'name':'lunch','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-10-12:30:30', datetime_string_type)},
-    {'name':'dinner','inTake':['burger','banana'],'time':datetime.strptime('2020-10-10-18:30:30', datetime_string_type)},
-    {'name':'breakfirst','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-11-08:30:30', datetime_string_type)},
-    {'name':'lunch','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-11-12:30:30', datetime_string_type)},
-    {'name':'dinner','inTake':['apple','banana','burger'],'time':datetime.strptime('2020-10-11-18:30:30', datetime_string_type)},
-    {'name':'breakfirst','inTake':['apple','orange'],'time':datetime.strptime('2020-10-12-08:30:30', datetime_string_type)},
-    {'name':'lunch','inTake':['apple','banana','orange'],'time':datetime.strptime('2020-10-12-12:30:30', datetime_string_type)},
-    {'name':'dinner','inTake':['apple','burger',],'time':datetime.strptime('2020-10-12-18:30:30', datetime_string_type)},
-]
-
-person_query = {'uuid':'qaz2wsx3edc','name':'AAAA','level':'Gold','birthday':datetime.strptime('2000-10-12-18:30:30', datetime_string_type),'height':156, 'weight':45, 'gender':'female', 'hobbies':'yoga'}
-
-access_query = [
-    {'name':'Andy','email':'Andy@email.com','password':'Andy'},
-    {'name':'Peige','email':'Peige@email.com','password':'Peige'},
-    {'name':'Julia','email':'Julia@email.com','password':'Julia'},
-    {'name':'Guest','email':'Guest@email.com','password':'Guest'},
-    ]
 
 class loginger:
+
+    # Declare as global variable to solve issue of query still empty after initilize 
+    # if declared globally because loginger assigns to varaiable as local variable 
+    # within local namesapace
+    global food_query 
+    global meal_query 
+    global person_query 
+    global event_query 
+
+
     def __init__(self):
-        self.__access_dict = access_query
         self.__success = False
+        self.__account_info =None
 
     def logging(self,email,password):
-        result = False
-        self.name = None
-        for data in self._loginger__access_dict:
-            if (email == data['email'] and password == data['password']):
-                result = True
-                self.name = data['name']
-        # return result
-        return True
+        access = check_access(email,password)
+        return (True, access) if access!=None else (False,access)
 
     def run(self):
         print('Hello, my friend. Stay awhile and listen ')
         times = 1
+
+        init_db()
+
         while(not self._loginger__success and times<=3):
             email = input("Enter your email:")
             password = input("Enter your password:")
-            self.__success = self.logging(email,password)
+            self.__success, self.__account_info = self.logging(email,password)
             if self.__success == False: print('Too bad!\n\nPlease try again')
             times += 1
 
@@ -73,13 +45,19 @@ class loginger:
             print('Bye')
             exit(1)
 
-        print('\n')
-        print('Hi {}'.format(self.name))
-        return self.name
+        print('\n\n\n')
+        print('****** Welcome {} ******'.format(self.__account_info['name']))
+
+        food_query=get_food_list()
+        meal_query=get_account_all_meals(self.__account_info['id'])
+        person_query = get_person(self.__account_info['id'])
+        event_query =get_events()
+        return DataCollecter(food_query,meal_query,event_query,person_query)
+
 
 class DataCollecter:
-    def __init__(self):
-        self.__food_dict = self.query_food_info(food_qrery)
+    def __init__(self,food_query,meal_query,event_query,person_query):
+        self.__food_dict = self.query_food_info(food_query)
         self.__dailyintake_dict = self.query_meal_info(meal_query)
         self.__dailyEvents_dict = self.query_event_info(event_query)
         self.__person = self.query_person_info(person_query)
@@ -102,8 +80,8 @@ class DataCollecter:
 
 
     #################
-    def query_food_info(self,food_qrery):
-        food_dict = {food['name']:Food(food['name'],food['carb'],food['protein'],food['fat']) for food in food_qrery}
+    def query_food_info(self,food_query):
+        food_dict = {food['name']:Food(food['name'],food['carb'],food['protein'],food['fat']) for food in food_query}
         return food_dict
 
     def query_meal_info(self,meal_query):
