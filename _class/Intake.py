@@ -1,6 +1,14 @@
 from collections import OrderedDict
 from datetime import datetime
 
+
+food_qrery = [
+    {'name':'apple','carb':70,'protein':10,'fat':0.5},
+    {'name':'banana','carb':90,'protein':2,'fat':0.1},
+    {'name':'orange','carb':40,'protein':8,'fat':0},
+    {'name':'burger','carb':60,'protein':20,'fat':10},
+]
+
 ##########################################################################
 ############### Andy ####################################################
 ##########################################################################
@@ -53,7 +61,8 @@ class Meal:
         self.inTake = inTake 
         self.time = time 
         self.totalCalories = None
-    
+        self.food_table = {food['name']:Food(name=food['name'],carb=food['carb'],protein=food['protein'],fat=food['fat']) for food in food_qrery}
+
     @property
     def time(self):
         return self.__time
@@ -95,13 +104,19 @@ class Meal:
         elif isinstance(input,Food): return True
         else: return False
     
+    #可以吃 [Food,Food]、Food、['food','food']
     def add_food(self,new_food):
-        if not self._is_food(new_food): raise Exception("Passed in non-meal type")
-        if isinstance(new_food,list):
-            [self.__inTake.append(food) for food in new_food]
-        else: 
-            self.__inTake.append(new_food)
-        self._update_toallCalories()
+        if not self._is_food(new_food): 
+            if isinstance(new_food,list) and all([True if food in self.food_table.keys() else False for food in new_food]):
+                [self.__inTake.append(self.food_table[food]) for food in new_food]
+                self._update_toallCalories()
+            else: raise Exception("Passed in non-meal type")
+        else:
+            if isinstance(new_food,list):
+                [self.__inTake.append(food) for food in new_food]
+            else:
+                self.__inTake.append(new_food)
+            self._update_toallCalories()
 
     def remove_food(self,index):
         if not (isinstance(index,int) and index in range(len(self.__inTake))): IndexError("Index is not int or out of range")

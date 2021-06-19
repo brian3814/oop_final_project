@@ -160,7 +160,6 @@ class Person(Account):
 
     # ===============
     # event
-
     def hostEvent(self):
         # connect db from here
         eventName = input("enter event name: ")
