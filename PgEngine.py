@@ -17,6 +17,10 @@ logging.basicConfig(filename='PgConnLog.log',
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
+# Datetime format
+datetime_string_type = '%Y-%m-%dT%H:%M:%S'
+date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
+
 # Read setting
 setting={}
 def read_setting():
@@ -82,14 +86,19 @@ def create_access(level,email,password):
 
 def check_access(email,password):
     check_access_query="""
-        SELECT json_build_object('id',id) 
+        SELECT json_build_object(
+            'id',account.id,
+            'name',account.first_name
+        ) 
         FROM access
+        LEFT JOIN account 
+        ON access.id = account.id
         WHERE access.email = %s
         AND access.password = %s
     """
     values =(email,password)
     result = execute(check_access_query,values)
-    return result[0][0]['id'] if len(result)==1 else None
+    return result[0][0] if len(result)==1 else None
 
 # Accout related
 def create_account(account_type,first_name,last_name,gender,birthday,height,weight):
@@ -233,6 +242,9 @@ def get_account_all_meals(access_id):
     values=(access_id,)
     result = execute(get_account_all_meals,values)
     logger.info('Meals of account fetched:{}'.format(result))
+        
+    for m in result:
+        m[0]['time'] = datetime.strptime(m[0]['time'],date_string_type)
     return [m[0] for m in result]
 
 def get_all_meals():
@@ -260,7 +272,35 @@ def get_daily_intake(user_id, start_date, end_date):
     #execute(get_meal_query)
     pass
 
-# Sports related
+# Events/Sports related
+def get_events():
+    get_events_query="""
+        SELECT row_to_json(event)
+        FROM (
+            SELECT e.event_name AS name,
+                CONCAT(a.first_name,' ',a.last_name) As host,
+                e.location AS location,
+                e.time AS time,
+                e.min_participants AS required_participants,
+                ARRAY(
+                    SELECT json_build_object(
+                        'sport', s.sport_name,
+                        'duartion', EXTRACT(epoch FROM ev.duration)/3600
+                    ) 
+                    FROM UNNEST(e.event_contents) WITH ORDINALITY AS ec(ec_id,ord)
+                    LEFT JOIN Event_content ev
+                    ON ec.ec_id = ev.content_id
+                    LEFT JOIN Sport s
+                    ON s.sport_id = ev.sport_id
+                ) AS sports
+            FROM Event e
+            LEFT JOIN Account a
+            ON a.id = e.host
+        ) event
+    """
+    result = execute(get_events_query)
+    return [e[0] for e in result]
+
 def create_genre(genre_desc):
     create_genre="""INSERT INTO Genre (description) 
         VALUES (%s)

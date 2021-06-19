@@ -1,6 +1,6 @@
 import os
 from PgEngine import *
-
+from _data_config import *
 
 # Create temp db with mockup data for test
 execute(""" SELECT pg_terminate_backend(pg_stat_activity.pid)
@@ -16,7 +16,8 @@ with open('{}/CreateSqlTable.sql'.format(os.path.dirname(__file__)),'r',encoding
 
 
 # Get access id
-access_id = check_access('Andy@email.com','22b1f2d414e57f030312bc8239b5449e')
+access_info = check_access('Andy@email.com','Andy')
+access_id = access_info['id']
 print(access_id) 
 
 
@@ -30,4 +31,8 @@ print(person)
 
 meal_of_person = get_account_all_meals(access_id)
 print(meal_of_person)
+
+
+events= get_events()
+print(events)
 

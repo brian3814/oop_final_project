@@ -31,10 +31,10 @@ VALUES
     ('香蕉(一根)',15,0,0),
     ('富士蘋果(小)',15,0,0),
     ('木瓜(一顆)',45,0,0),
-    ('apple',20,0,0),
-    ('banana',30,0,0),
-    ('orange',25,0,0),
-    ('burger',50,20,15);
+    ('apple',70,10,0.5),
+    ('banana',90,2,0.1),
+    ('orange',40,8,0),
+    ('burger',60,20,10);
 
 
 --Command to create meal table--
@@ -70,11 +70,12 @@ CREATE TABLE  IF NOT EXISTS Access(
 );
 
 INSERT INTO Access (email, password, level)
-VALUES ('Andy@email.com','22b1f2d414e57f030312bc8239b5449e',1),
-    ('Paige@email.com','c371ae865fc676853cf9edf059adc13c',1),
-    ('Julia@email.com','baa72de59cc663a75f5345e40533292c',1),
-    ('Brian@email.com','98e74052d0db8b82de760cd7ab135f3c',1),
-    ('guest','01f533aed3d60f81346edbe9173bd861',0);
+VALUES ('Andy@email.com','Andy',1),
+    ('Paige@email.com','Paige',1),
+    ('Julia@email.com','Julia',1),
+    ('Brian@email.com','Brian',1),
+    ('ihateoop','oop',2),
+    ('guest','guest',0);
 
 --Command to create account table--
 CREATE TABLE IF NOT EXISTS Account(
@@ -96,7 +97,8 @@ VALUES
     (2,'Paige','Peige','person','female','2000-02-01',45,170),
     (3,'Julia','Julia','person','female','2000-03-01',45,170),
     (4,'Brian','Brian','person','male','2000-04-01',65,175),
-    (5,'guest','guest','person','male','1911-10-10',70,180);
+    (5,'guest','guest','person','male','1911-10-10',70,180),
+    (6,'ihateoop','just kidding','person','unknown','1970-01-01',100,0);
 
 
 CREATE TABLE IF NOT EXISTS Level(
@@ -195,23 +197,40 @@ VALUES
 CREATE TABLE IF NOT EXISTS Event(
     event_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     event_name VARCHAR(25) NOT NULL,
-    host uuid NOT NULL,
+    host INTEGER NOT NULL,
     location VARCHAR(25) NOT NULL,
     time Date NOT NULL,
-    min_participants REAL CHECK (min_participants >1),
+    min_participants REAL CHECK (min_participants >=1),
     event_contents INTEGER[] 
 );
+
+INSERT INTO Event (host,event_name,time,location,min_participants,event_contents)
+VALUES 
+    (1,'Yoga 1','2020-10-10 18:30:30','Taipei',1,'{1,2}'),
+    (2,'Baseball is terrifying','2020-10-11 18:30:30','Taipei',2,'{3,4}'),
+    (3,'Birdie Golf','2020-10-12 12:30:30','Taipei',3,'{5}'),
+    (4,'Pilates','2020-10-12 18:30:30','Taipei',4,'{6}');
+
 
 --Command to create event content--
 CREATE TABLE IF NOT EXISTS Event_Content(
     content_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     serial INTEGER NOT NULL,
     sport_id INTEGER NOT NULL,
-    duration INTERVAL NOT NULL
+    duration INTERVAl NOT NULL
 );
+
+Insert into Event_Content (serial,sport_id,duration)
+VALUES
+    (1,2,'03:00:00'),
+    (2,9,'01:30:00'),
+    (1,13,'01:00:00'),
+    (2,7,'01:30:00'),
+    (1,9,'02:00:00'),
+    (1,2,'01:30:00');
 
 --Command to create event_participant table--
 CREATE TABLE IF NOT EXISTS Event_Participants(
     event_id INTEGER PRIMARY KEY NOT NULL,
-    participants uuid []
+    participants INTEGER []
 );
