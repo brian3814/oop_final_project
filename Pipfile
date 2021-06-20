@@ -10,6 +10,7 @@ psycopg2 = "*"
 pytest = "*"
 python-dateutil = "*"
 flask = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "*"
