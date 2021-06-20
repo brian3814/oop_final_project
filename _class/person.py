@@ -1,6 +1,11 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from _class.Event import *
+import time
+from _class.Intake import *
+datetime_string_type_with_time = '%Y-%m-%d-%H:%M:%S'
+date_string_type = '-'.join(datetime_string_type_with_time.split('-')[0:3])
+
 
 class Account():
     def __init__(self, uuid, name, level):
@@ -95,6 +100,9 @@ class Person(Account):
     def get_dailyIntakes(self):
         return self.__dailyIntakes
 
+    def get_dailyEvents(self):
+        return self.__dailyEvents
+
     def update_dailyEvents(self,events):
         self.__dailyEvents = events
 
@@ -143,6 +151,54 @@ class Person(Account):
         result = sum([daily.total_consume_calories for __,daily in between_dict.items()])
         print('{} Consume {} Caloies from {} to {}'.format(self.name.split( )[0],result,start_d,end_d))
         return {'result':result,"dailyEvents":between_dict}
+
+    def get_total_kcal_with_time(self,start=None,end=None):
+        _start = start if start!=None else input('Enter your start day')
+        _end = end if end!=None else input('Enter your end day')
+        print()
+        result = self.caloiesIntakeCal(_start,_end)
+        for date, daily in result['dailyIntakes'].items():
+            print(date)
+            [print(data) for data in daily.meal_detail()]
+            print()
+            time.sleep(.5)
+
+    def get_totally_consumed_kcal_with_time(self,start=None,end=None):
+        _start = start if start!=None else input('Enter your start day')
+        _end = end if end!=None else input('Enter your end day')
+        print()
+        result = self.caloiesConsumeCal(_start,_end)
+        for date, daily in result['dailyEvents'].items():
+            print(date)
+            [print(i,data) for i,data in daily.event_summary().items()]
+            print()
+            time.sleep(.5)
+
+    def add_new_meal(self,new_meal_info):
+        for data in [new_meal_info]:
+            time = datetime.strptime(data['time'], datetime_string_type_with_time)
+            if self.__dailyIntakes.get(time.strftime(date_string_type),None) == None:
+                self.__dailyIntakes[time.strftime(date_string_type)]=DailyIntakeCalories(time)
+            new_meal=Meal(data['name'],time)
+            new_meal.add_food(new_meal_info['inTake'])
+            self.__dailyIntakes[time.strftime(date_string_type)].add_meal(new_meal)
+        self.update_dailyIntakes(self.__dailyIntakes)
+
+    def remove_meal_by_index(self,date_str,index):
+        self.__dailyIntakes.get(date_str).remove_meal(index)
+        if len(self.__dailyIntakes.get(date_str)) == 0: 
+            del self.__dailyIntakes[date_str]
+
+    def add_new_event(self,new_event_info):
+        for event in [new_event_info]:
+            time = datetime.strptime(event['time'], datetime_string_type_with_time)
+            if self.__dailyEvents.get(time.strftime(date_string_type),None) == None:
+                self.__dailyEvents[time.strftime(date_string_type)]=DailyConsumeCalories(time)
+            events = [(sport_dict['sport'],sport_dict['duration']) for sport_dict in event['sports']]
+            UserEvent = Event()
+            totalCalories = UserEvent.GetConsumedCalories(events)
+            totalgenres = UserEvent.get_genre()
+            self.__dailyEvents[time.strftime(date_string_type)].add_event({'sports':events,'totalCalories':totalCalories,'totalgenres':totalgenres})
 
     # ===============
     # friens follow & unfollow

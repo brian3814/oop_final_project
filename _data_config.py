@@ -60,11 +60,16 @@ class DataCollecter:
         self.__food_dict = self.query_food_info(food_query)
         self.__dailyintake_dict = self.query_meal_info(meal_query)
         self.__dailyEvents_dict = self.query_event_info(event_query)
+        self.__sport_list = self.query_sport_info()
         self.__person = self.query_person_info(person_query)
 
     @property
     def food_dict(self):
         return self.__food_dict
+
+    @property
+    def sport_list(self):
+        return self.__sport_list
 
     @property
     def dailyintake_dict(self):
@@ -98,7 +103,7 @@ class DataCollecter:
         dailyEvents_dict = OrderedDict()
         for event in event_query:
             if dailyEvents_dict.get(event['time'].strftime(date_string_type),None) == None:
-                dailyEvents_dict[event['time'].strftime(date_string_type)]=DailyConsumeCalories(event['time'])
+                dailyEvents_dict[event['time'].strftime(date_string_type)]=DailyConsumeCalories(event['time'],[])
             events = [(sport_dict['sport'],sport_dict['duration']) for sport_dict in event['sports']]
             UserEvent = Event()
             totalCalories = UserEvent.GetConsumedCalories(events)
@@ -109,6 +114,25 @@ class DataCollecter:
     def query_person_info(self,person_query):
         person = Person(person_query['name'], person_query['uuid'], person_query['level'], person_query['birthday'], person_query['height'], person_query['weight'], person_query['gender'], person_query['hobbies'])
         return person
+
+    def query_sport_info(self):
+        return  ['BowlingMorePeople',
+                'YogaMorePeople',
+                'BowlingSingle',
+                'YogaSingle',
+                'Badminton',
+                'Dancing',
+                'ShootingBaskets',
+                'Trampoline',
+                'GolfMorePeople',
+                'TaiChiMorePeople',
+                'GolfSingle',
+                'TaiChi',
+                'Baseball',
+                'RunMorePeople',
+                'BasketballSingle',
+                'RockClimbing'
+                ]
 
     def give_me_a_person_with_data(self):
         self.__person.update_dailyIntakes(self.__dailyintake_dict)
