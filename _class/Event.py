@@ -211,7 +211,13 @@ class DailyConsumeCalories:
         self.__events = []
 
     def event_summary(self):
-        return {i:{event.name:event.totalCalories} for i,event in enumerate(self.__events)}
+        totalCalories = 0
+        result={}
+        for i,event in enumerate(self.events):
+            result[i]={'totalCalories':event['totalCalories'],'sports':event['sports']}
+            totalCalories += event['totalCalories']
+        print('totalCalories: {}'.format(totalCalories))
+        return result
 
     # def event_detail(self):
     #     return [{"event_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()} for i,meal in enumerate(self.__events)]
