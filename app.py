@@ -3,8 +3,10 @@ from _class.Intake import *
 from _class.Genre import *
 from _class.Event import *
 from datetime import datetime
-from flask import Flask,jsonify
+from flask import Flask,jsonify,request
 from collections import OrderedDict
+from flask_cors import CORS,cross_origin
+from PgEngine import *
 
 datetime_string_type = '%Y-%m-%d-%H:%M:%S'
 date_string_type = '-'.join(datetime_string_type.split('-')[0:3])
@@ -141,6 +143,20 @@ def caloiesIntakeCal():
         "CaloiesIntakeCal":result['result'],
         "Intakes":dailyIntake_dict
         }
+
+@app.route('/checkaccess',methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type'])
+def loginPage():
+    data= request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    print(email,password)
+    access = check_access(email,password)
+    print(access)
+    response = {'success':False} if access==None else{'success':True,'info':access} 
+
+    return response
+
 
 
 if __name__ == "__main__":
