@@ -186,7 +186,7 @@ class Person(Account):
 
     def remove_meal_by_index(self,date_str,index):
         self.__dailyIntakes.get(date_str).remove_meal(index)
-        if len(self.__dailyIntakes.get(date_str)) == 0: 
+        if len(self.__dailyIntakes.get(date_str).meals) == 0: 
             del self.__dailyIntakes[date_str]
 
     def add_new_event(self,new_event_info):
