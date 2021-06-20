@@ -4,7 +4,7 @@ from _class.Genre import *
 from _class.Event import *
 from datetime import datetime
 from collections import OrderedDict
-from  _data_config import *
+from _class.data_config import *
 import time
 
 #####################################################################################################################
@@ -36,14 +36,16 @@ class Options():
         time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
         name = input('Enter meal name > ')
         print('======= food list =======')
-        max_col = 3
-        txt = []
+        _col = 0
+        txt = ''
         for food in self.dc.food_dict.keys():
-            txt.append(food)
-            if len(txt) >= max_col:
+            txt += '{}, '.format(food)
+            _col += 1
+            if _col >= 3:
                 print(txt)
-                txt = []
-        if len(txt) > 0:
+                txt = ''
+                _col = 0
+        if _col > 0:
             print(txt)
         inTake = input('Enter inTake (a,b,c,...) > ').split(',')
         inTake = [self.dc.food_dict.get(item) for item in inTake]
@@ -66,14 +68,16 @@ class Options():
 
     def func5(self):
         time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
-        max_col = 3
-        txt = []
-        for sport in self.dc.sport_list:
-            txt.append(sport)
-            if len(txt) >= max_col:
+        _col = 0
+        txt = ''
+        for food in self.dc.sport_list:
+            txt += '{}, '.format(food)
+            _col += 1
+            if _col >= 3:
                 print(txt)
-                txt = []
-        if len(txt) > 0:
+                txt = ''
+                _col = 0
+        if _col > 0:
             print(txt)
         sports = input('Enter (sport,duration/sport,duration/...) > ').split('/')
         sports = [{'sport':sport.split(',')[0],'duration':float(sport.split(',')[1])} for sport in sports]

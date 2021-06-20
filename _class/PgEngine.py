@@ -25,7 +25,7 @@ datetime_string_type_without_time = '%Y-%m-%d'
 # Read setting
 setting={}
 def read_setting():
-    with open('{}/setting.json'.format(os.path.dirname(__file__)),'r',encoding='utf-8') as sf:
+    with open('{}/setting/setting.json'.format('\\'.join(os.path.dirname(__file__).split('\\')[:-1])),'r',encoding='utf-8') as sf:
         temp = json.load(sf)['conn_info']
         for k,v in temp.items():
             setting[k]=v
