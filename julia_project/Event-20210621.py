@@ -100,7 +100,7 @@ class Sport:
 
     # for calories tables getting
     def GetCaloriesTable(self):
-        return CaloriesTable
+        return caloriesTable
 
     # for calories computing, ConsumedInInterval for Event 計算用
     def GetConsumedCalories(self):
@@ -161,7 +161,7 @@ class Event:
         for activity in activityList:
             genre_d = genreList[activity] #YogaSingle genre_d=165
             for index in range(len(recoverlist)): #recoverlist為tuple裡面的值, range = 8 (from 0 to 7)
-                if genre_d > recoverlist[index]: #165>128(最高位元)=代表有128, 37-32=5(代表有32)
+                if genre_d >= recoverlist[index]: #165>128(最高位元)=代表有128, 37-32=5(代表有32)
                     genre_d = genre_d - recoverlist[index]
                     if genreStrList[index] not in resurt: #(有128, 把128加進去resurt裡面...)
                         resurt.append(genreStrList[index])
@@ -222,3 +222,5 @@ class DailyConsumeCalories:
 
     # def event_detail(self):
     #     return [{"event_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()} for i,meal in enumerate(self.__events)]
+
+
