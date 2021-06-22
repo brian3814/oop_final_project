@@ -106,7 +106,7 @@ class Event:
         for activity in self.__activityList:
             genre_d = genreList[activity]
             for index in range(len(recoverlist)):
-                if genre_d > recoverlist[index]:
+                if genre_d >= recoverlist[index]:
                     genre_d = genre_d - recoverlist[index]
                     if genreStrList[index] not in resurt:
                         resurt.append(genreStrList[index])
@@ -194,11 +194,11 @@ caloriesTable = {'BowlingMorePeople':149,
 notBALL = 0b00000001  #1
 isBALL = 0b00000010  #2
 Pearson = 0b00000100  #4
-Interactive = 0b00001000 #8
+Interactive = 0b00001000 #8 
 Dynamic = 0b00010000 #16
 Static = 0b00100000 #32
 Outdoor = 0b01000000 #64
-Indoor = 0b10000000 #124
+Indoor = 0b10000000 #128
 
 genreList = {'BowlingMorePeople': Indoor | Static | Interactive | isBALL,
              'YogaMorePeople'   : Indoor | Static | Interactive | notBALL,
