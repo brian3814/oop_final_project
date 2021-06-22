@@ -1,6 +1,5 @@
 from _class.person import *
 from _class.Intake import *
-from _class.Genre import *
 from _class.Event import *
 from datetime import datetime
 from collections import OrderedDict
@@ -24,6 +23,8 @@ class Options():
         '3': ('Remove meal',self.func3),
         '4': ('Tell me total consumed-kcal',self.func4),
         '5': ('Add new event',self.func5),
+        '6': ('Remove event',self.func6),
+        '7': ('Find sport by genre',self.func7),
         '9': ('Bye',self.func9)
         }
 
@@ -33,7 +34,7 @@ class Options():
         self.person.get_total_kcal_with_time(start_d,end_d)
 
     def func2(self):
-        time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
+        _time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
         name = input('Enter meal name > ')
         print('======= food list =======')
         _col = 0
@@ -47,9 +48,10 @@ class Options():
                 _col = 0
         if _col > 0:
             print(txt)
+            time.sleep(.5)
         inTake = input('Enter inTake (a,b,c,...) > ').split(',')
         inTake = [self.dc.food_dict.get(item) for item in inTake]
-        self.person.add_new_meal({'name':name,'time':time,'inTake':inTake})
+        self.person.add_new_meal({'name':name,'time':_time,'inTake':inTake})
 
     def func3(self):
         daily_dict = self.person.get_dailyIntakes()
@@ -67,7 +69,7 @@ class Options():
         self.person.get_totally_consumed_kcal_with_time(start_d,end_d)
 
     def func5(self):
-        time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
+        _time = input('Enter datetime (yyyy-mm-dd-HH:MM:SS)> ')
         _col = 0
         txt = ''
         for food in self.dc.sport_list:
@@ -79,10 +81,39 @@ class Options():
                 _col = 0
         if _col > 0:
             print(txt)
+            time.sleep(.5)
         sports = input('Enter (sport,duration/sport,duration/...) > ').split('/')
         sports = [{'sport':sport.split(',')[0],'duration':float(sport.split(',')[1])} for sport in sports]
-        self.person.add_new_event({'sports':sports,'time':time})
+        self.person.add_new_event({'sports':sports,'time':_time})
 
+    def func6(self):
+        daily_dict = self.person.get_dailyEvents()
+        for date, daliyConsume in daily_dict.items():
+            print()
+            print(date,daliyConsume.total_consume_calories)
+            print(daliyConsume.event_summary())
+        date_str = input('Enter the date (yyyy-mm-dd)> ')
+        index = input('Enter the meal index > ')
+        self.person.remove_event_by_index(date_str,int(index))
+
+    def func7(self):
+        _col = 0
+        txt = ''
+        for _genre in get_genre_list():
+            txt += '{}, '.format(_genre)
+            _col += 1
+            if _col >= 3:
+                print(txt)
+                txt = ''
+                _col = 0
+        if _col > 0:
+            print(txt)
+            time.sleep(.5)
+        genreFilter = input('Enter genre (AAA,BBB,...) > ').split(',')
+        activityFilteredList = genre(genreFilter) 
+        print('filtered list = ' + str(activityFilteredList))
+        time.sleep(1)
+        
     def func9(self):
         exit(0)
 
@@ -99,6 +130,7 @@ class Options():
                 txt,action = self.choice[choice]
                 print('=================================')
                 print(txt)
+                print('---------------------------------')
                 action()
  
 if __name__ == "__main__":
