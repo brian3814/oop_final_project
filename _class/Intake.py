@@ -46,7 +46,7 @@ class Food:
         if bool([True for x in (self.__carb, self.__protein, self.__fat) if x is None]): 
             raise Exception('Have not set the composition yet')
         return {'carb':self.__carb,'protein':self.__protein,'fat':self.__fat}
- 
+
     def set_composition(self,carb,protein,fat):
         if not [x for x in (carb, protein, fat) if x is None or (not isinstance(x,int) and not isinstance(x,float))]:
             self.__carb = carb
@@ -195,6 +195,9 @@ class DailyIntakeCalories:
     def meal_summary(self):
         return {i:{meal.name:meal.totalCalories} for i,meal in enumerate(self.__meals)}
 
-    def meal_detail(self):
-        return [{"meal_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()} for i,meal in enumerate(self.__meals)]
-
+    def meal_detail(self, with_index=None):
+        if with_index == None:
+            return [{"meal_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()} for i,meal in enumerate(self.__meals)]
+        else:
+            return [{i:{"meal_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()}} for i,meal in enumerate(self.__meals)]
+            

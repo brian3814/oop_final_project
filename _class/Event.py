@@ -1,62 +1,7 @@
 from datetime import datetime
+from collections import OrderedDict
+
 #### Sport class +
-caloriesTable = {'BowlingMorePeople':149,
-            'YogaMorePeople':124,
-            'BowlingSingle':149,
-            'YogaSingle':124,
-            'Badminton':224,
-            'Dancing':238,
-            'ShootingBaskets':224,
-            'Trampoline':174,
-            'GolfMorePeople' :224,
-            'TaiChiMorePeople':199,
-            'GolfSingle':224,
-            'TaiChi':199,
-            'Baseball':249,
-            'RunMorePeople' :398,
-            'BasketballSingle':398,
-            'RockClimbing':547,
-            'ActivityEND': 0,
-            }
-
-notBALL = 0b00000001  #1
-isBALL = 0b00000010  #2
-Pearson = 0b00000100  #4
-Interactive = 0b00001000 #8
-Dynamic = 0b00010000 #16
-Static = 0b00100000 #32
-Outdoor = 0b01000000 #64
-Indoor = 0b10000000 #124
-
-genreList = {'BowlingMorePeople': Indoor | Static | Interactive | isBALL,
-             'YogaMorePeople'   : Indoor | Static | Interactive | notBALL,
-             'BowlingSingle'    : Indoor | Static | Pearson | isBALL,
-             'YogaSingle'       : Indoor | Static | Pearson | notBALL,
-             'Badminton'        : Indoor | Dynamic | Interactive | isBALL,
-             'Dancing'          : Indoor | Dynamic | Interactive | notBALL,
-             'ShootingBaskets'  : Indoor | Dynamic | Pearson | isBALL,
-             'Trampoline'       : Indoor | Dynamic | Pearson | notBALL,
-             'GolfMorePeople'   : Outdoor | Static | Interactive | isBALL,
-             'TaiChiMorePeople' : Outdoor | Static | Interactive | notBALL,
-             'GolfSingle'       : Outdoor | Static | Pearson | isBALL,
-             'TaiChi'           : Outdoor | Static | Pearson | notBALL,
-             'Baseball'         : Outdoor | Dynamic | Interactive | isBALL,
-             'RunMorePeople'    : Outdoor | Dynamic | Interactive | notBALL,
-             'BasketballSingle' : Outdoor | Dynamic | Pearson | isBALL,
-             'RockClimbing'     : Outdoor | Dynamic | Pearson | notBALL
-            }
-
-GenreTuples = (
-    ('Indoor',Indoor,),
-    ('Outdoor',Outdoor,), 
-    ('Static',Static,),
-    ('Dynamic',Dynamic,),
-    ('Interactive',Interactive,), 
-    ('Pearson',Pearson,),
-    ('isBALL',isBALL,),
-    ('notBALL',notBALL,)
-    )
-
 class Sport:
     # constructor
     def __init__(self, genre, activity, hour):
@@ -157,7 +102,7 @@ class Event:
     
     def get_genre(self):
         resurt = []
-        genreStrList, recoverlist = zip(*GenreTuples)
+        genreStrList, recoverlist =list(Genre_dict.keys()),list(Genre_dict.values())
         for activity in self.__activityList:
             genre_d = genreList[activity]
             for index in range(len(recoverlist)):
@@ -210,14 +155,97 @@ class DailyConsumeCalories:
         self.__is_init = True
         self.__events = []
 
-    def event_summary(self):
+    def event_summary(self,gmr=0):
+        if gmr != 0:
+            print('Basal metabolic rate: {}'.format(gmr))
         totalCalories = 0
         result={}
         for i,event in enumerate(self.events):
             result[i]={'totalCalories':event['totalCalories'],'sports':event['sports']}
             totalCalories += event['totalCalories']
-        print('totalCalories: {}'.format(totalCalories))
+        print('Consumed Calories: {}'.format(totalCalories))
+        if gmr != 0:
+            print('Totally Consumed Calories: {}'.format(totalCalories+gmr))
         return result
 
     # def event_detail(self):
     #     return [{"event_name":meal.name,'totalCalories':meal.totalCalories,'food':meal.food_summamry()} for i,meal in enumerate(self.__events)]
+
+###############################
+caloriesTable = {'BowlingMorePeople':149,
+            'YogaMorePeople':124,
+            'BowlingSingle':149,
+            'YogaSingle':124,
+            'Badminton':224,
+            'Dancing':238,
+            'ShootingBaskets':224,
+            'Trampoline':174,
+            'GolfMorePeople' :224,
+            'TaiChiMorePeople':199,
+            'GolfSingle':224,
+            'TaiChi':199,
+            'Baseball':249,
+            'RunMorePeople' :398,
+            'BasketballSingle':398,
+            'RockClimbing':547,
+            'ActivityEND': 0,
+            }
+
+notBALL = 0b00000001  #1
+isBALL = 0b00000010  #2
+Pearson = 0b00000100  #4
+Interactive = 0b00001000 #8
+Dynamic = 0b00010000 #16
+Static = 0b00100000 #32
+Outdoor = 0b01000000 #64
+Indoor = 0b10000000 #124
+
+genreList = {'BowlingMorePeople': Indoor | Static | Interactive | isBALL,
+             'YogaMorePeople'   : Indoor | Static | Interactive | notBALL,
+             'BowlingSingle'    : Indoor | Static | Pearson | isBALL,
+             'YogaSingle'       : Indoor | Static | Pearson | notBALL,
+             'Badminton'        : Indoor | Dynamic | Interactive | isBALL,
+             'Dancing'          : Indoor | Dynamic | Interactive | notBALL,
+             'ShootingBaskets'  : Indoor | Dynamic | Pearson | isBALL,
+             'Trampoline'       : Indoor | Dynamic | Pearson | notBALL,
+             'GolfMorePeople'   : Outdoor | Static | Interactive | isBALL,
+             'TaiChiMorePeople' : Outdoor | Static | Interactive | notBALL,
+             'GolfSingle'       : Outdoor | Static | Pearson | isBALL,
+             'TaiChi'           : Outdoor | Static | Pearson | notBALL,
+             'Baseball'         : Outdoor | Dynamic | Interactive | isBALL,
+             'RunMorePeople'    : Outdoor | Dynamic | Interactive | notBALL,
+             'BasketballSingle' : Outdoor | Dynamic | Pearson | isBALL,
+             'RockClimbing'     : Outdoor | Dynamic | Pearson | notBALL
+            }
+
+Genre_dict = OrderedDict({
+    ('Indoor',Indoor,),
+    ('Outdoor',Outdoor,), 
+    ('Static',Static,),
+    ('Dynamic',Dynamic,),
+    ('Interactive',Interactive,), 
+    ('Pearson',Pearson,),
+    ('isBALL',isBALL,),
+    ('notBALL',notBALL),})
+
+def genre(genreFilters):
+    filteredList = []
+    tmpActivity = list(genreList.keys()) #Activity=sport
+    tmpGenreList = list(genreList.values())
+    
+    genreFilter = None
+    for genre in genreFilters:
+        if genreFilter == None:
+            genreFilter = Genre_dict[genre]
+        else:
+            genreFilter = genreFilter | Genre_dict[genre]
+
+    for index in range(len(genreList)):
+        if (tmpGenreList[index] & genreFilter == genreFilter):
+            filteredList.append(tmpActivity[index])
+            #print('filtered list = ' + str(filteredList))
+    return filteredList
+
+def get_genre_list():
+    return list(Genre_dict.keys())
+

@@ -133,7 +133,7 @@ class Person(Account):
         print('{} Intake {} Caloies from {} to {}'.format(self.name.split( )[0],result,start_d,end_d))
         return {'result':result,"dailyIntakes":between_dict}
 
-    def caloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d'):
+    def caloiesConsumeCal(self,start_d,end_d,i_format='%Y-%m-%d',t_format='%Y-%m-%d',gmr=None):
         # __dailyIntakes = {'2020-10-10': Daily{date:,meals},}
         t_formats = t_format.split(t_format[2])
         index = [t_formats.index('%Y') if '%Y' in t_formats else None,t_formats.index('%m') if '%m' in t_formats else None,t_formats.index('%d') if '%d' in t_formats else None]
@@ -149,7 +149,9 @@ class Person(Account):
                 between_dict[date]=self._Person__dailyEvents[date]
         
         result = sum([daily.total_consume_calories for __,daily in between_dict.items()])
-        print('{} Consume {} Caloies from {} to {}'.format(self.name.split( )[0],result,start_d,end_d))
+        if gmr != None:
+            result += len(between_dict)*gmr
+        print('{} Consume {} Caloies from {} to {}\n'.format(self.name.split( )[0],result,start_d,end_d))
         return {'result':result,"dailyEvents":between_dict}
 
     def get_total_kcal_with_time(self,start=None,end=None):
@@ -167,10 +169,10 @@ class Person(Account):
         _start = start if start!=None else input('Enter your start day')
         _end = end if end!=None else input('Enter your end day')
         print()
-        result = self.caloiesConsumeCal(_start,_end)
+        result = self.caloiesConsumeCal(_start,_end,gmr=self.gmr)
         for date, daily in result['dailyEvents'].items():
             print(date)
-            [print(i,data) for i,data in daily.event_summary().items()]
+            [print(i,data) for i,data in daily.event_summary(self.gmr).items()]
             print()
             time.sleep(.5)
 
@@ -199,6 +201,12 @@ class Person(Account):
             totalCalories = UserEvent.GetConsumedCalories(events)
             totalgenres = UserEvent.get_genre()
             self.__dailyEvents[time.strftime(date_string_type)].add_event({'sports':events,'totalCalories':totalCalories,'totalgenres':totalgenres})
+
+    def remove_event_by_index(self,date_str,index):
+        self.__dailyEvents.get(date_str).remove_event(index)
+        if len(self.__dailyEvents.get(date_str).events) == 0: 
+            del self.__dailyEvents[date_str]
+
 
     # ===============
     # friens follow & unfollow

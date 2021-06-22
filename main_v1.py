@@ -1,6 +1,5 @@
 from _class.person import *
 from _class.Intake import *
-from _class.Genre import *
 from _class.Event import *
 from datetime import datetime
 from flask import Flask,jsonify
