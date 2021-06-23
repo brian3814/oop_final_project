@@ -3,7 +3,6 @@ import psycopg2
 import logging
 from _class.person import *
 from _class.Intake import *
-from _class.Genre import *
 from _class.Event import *
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
